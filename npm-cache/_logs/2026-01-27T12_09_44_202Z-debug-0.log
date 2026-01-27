@@ -1,0 +1,74 @@
+0 verbose cli /Users/oimate/.nvm/versions/node/v22.11.0/bin/node /Users/oimate/.nvm/versions/node/v22.11.0/bin/npm
+1 info using npm@10.9.0
+2 info using node@v22.11.0
+3 silly config load:file:/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/oimate/Downloads/jobquest/.npmrc
+5 silly config load:file:/Users/oimate/.npmrc
+6 silly config load:file:/Users/oimate/.nvm/versions/node/v22.11.0/etc/npmrc
+7 verbose title npm install
+8 verbose argv "install" "--cache" "./npm-cache"
+9 verbose logfile logs-max:10 dir:/Users/oimate/Downloads/jobquest/npm-cache/_logs/2026-01-27T12_09_44_202Z-
+10 verbose logfile /Users/oimate/Downloads/jobquest/npm-cache/_logs/2026-01-27T12_09_44_202Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 silly idealTree buildDeps
+14 silly fetch manifest picomatch@^3 || ^4
+15 silly packumentCache full:https://registry.npmjs.org/picomatch cache-miss
+16 http fetch GET 200 https://registry.npmjs.org/picomatch 204ms (cache miss)
+17 silly packumentCache full:https://registry.npmjs.org/picomatch set size:undefined disposed:false
+18 silly placeDep ROOT picomatch@4.0.3 REPLACE for: fdir@6.5.0 want: ^3 || ^4
+19 silly fetch manifest picomatch@^2.3.1
+20 silly packumentCache full:https://registry.npmjs.org/picomatch cache-miss
+21 http fetch GET 200 https://registry.npmjs.org/npm 594ms
+22 http fetch GET 200 https://registry.npmjs.org/picomatch 38ms (cache hit)
+23 silly packumentCache full:https://registry.npmjs.org/picomatch set size:118818 disposed:false
+24 silly placeDep node_modules/micromatch picomatch@2.3.1 OK for: micromatch@4.0.8 want: ^2.3.1
+25 silly reify moves {}
+26 verbose stack Error: EPERM: operation not permitted, mkdir '/Users/oimate/Downloads/jobquest/node_modules'
+26 verbose stack     at async mkdir (node:internal/fs/promises:857:10)
+26 verbose stack     at async /Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:624:20
+26 verbose stack     at async Promise.allSettled (index 0)
+26 verbose stack     at async [reifyPackages] (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:325:11)
+26 verbose stack     at async Arborist.reify (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:142:5)
+26 verbose stack     at async Install.exec (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/lib/commands/install.js:150:5)
+26 verbose stack     at async Npm.exec (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/lib/npm.js:207:9)
+26 verbose stack     at async module.exports (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/lib/cli/entry.js:74:5)
+27 error code EPERM
+28 error syscall mkdir
+29 error path /Users/oimate/Downloads/jobquest/node_modules
+30 error errno -1
+31 error Error: EPERM: operation not permitted, mkdir '/Users/oimate/Downloads/jobquest/node_modules'
+31 error     at async mkdir (node:internal/fs/promises:857:10)
+31 error     at async /Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:624:20
+31 error     at async Promise.allSettled (index 0)
+31 error     at async [reifyPackages] (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:325:11)
+31 error     at async Arborist.reify (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:142:5)
+31 error     at async Install.exec (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/lib/commands/install.js:150:5)
+31 error     at async Npm.exec (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/lib/npm.js:207:9)
+31 error     at async module.exports (/Users/oimate/.nvm/versions/node/v22.11.0/lib/node_modules/npm/lib/cli/entry.js:74:5) {
+31 error   errno: -1,
+31 error   code: 'EPERM',
+31 error   syscall: 'mkdir',
+31 error   path: '/Users/oimate/Downloads/jobquest/node_modules'
+31 error }
+32 error
+32 error The operation was rejected by your operating system.
+32 error It is likely you do not have the permissions to access this file as the current user
+32 error
+32 error If you believe this might be a permissions issue, please double-check the
+32 error permissions of the file and its containing directories, or try running
+32 error the command again as root/Administrator.
+33 silly unfinished npm timer reify 1769515784843
+34 silly unfinished npm timer reify:createSparse 1769515785418
+35 verbose cwd /Users/oimate/Downloads/jobquest
+36 verbose os Darwin 25.2.0
+37 verbose node v22.11.0
+38 verbose npm  v10.9.0
+39 notice
+39 notice New major version of npm available! 10.9.0 -> 11.8.0
+39 notice Changelog: https://github.com/npm/cli/releases/tag/v11.8.0
+39 notice To update run: npm install -g npm@11.8.0
+39 notice  { force: true, [Symbol(proc-log.meta)]: true }
+40 verbose exit -1
+41 verbose code -1
+42 error A complete log of this run can be found in: /Users/oimate/Downloads/jobquest/npm-cache/_logs/2026-01-27T12_09_44_202Z-debug-0.log
