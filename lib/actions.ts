@@ -40,8 +40,12 @@ export async function createJob(data: {
 export async function updateJob(id: string, data: Partial<JobApplication> & { dateApplied?: Date | string | null; dateInterviewed?: Date | string | null }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: any = { ...data }
-  if (data.dateApplied) updateData.dateApplied = new Date(data.dateApplied)
-  if (data.dateInterviewed) updateData.dateInterviewed = new Date(data.dateInterviewed)
+  if (data.dateApplied !== undefined) {
+      updateData.dateApplied = data.dateApplied ? new Date(data.dateApplied) : null
+  }
+  if (data.dateInterviewed !== undefined) {
+      updateData.dateInterviewed = data.dateInterviewed ? new Date(data.dateInterviewed) : null
+  }
 
   const job = await prisma.jobApplication.update({
     where: { id },

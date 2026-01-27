@@ -18,8 +18,8 @@ export function StatusChart({ data }: { data: { name: string, value: number }[] 
         <CardTitle className="font-heading">Application Status</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
-        <div className="h-[250px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-[250px] w-full min-h-[250px]">
+          <ResponsiveContainer width="100%" height="100%" minHeight={250}>
             <BarChart data={data}>
               <XAxis
                 dataKey="name"

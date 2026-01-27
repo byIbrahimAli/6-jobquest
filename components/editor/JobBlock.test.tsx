@@ -35,4 +35,25 @@ describe('JobBlock', () => {
     // Check if status badge is present (Applied appears twice: label and status)
     expect(screen.getAllByText('Applied').length).toBeGreaterThanOrEqual(1)
   })
+
+  it('shows copy button for interview date when present', () => {
+      const interviewJob = { 
+          ...mockJob, 
+          dateInterviewed: new Date('2024-02-15') 
+      }
+      render(<JobBlock job={interviewJob} />)
+      
+      // Verify date display
+      // Depending on locale, '2024-02-15' might render variously. 
+      // The input value uses YYYY-MM-DD
+      expect(screen.getByDisplayValue('2024-02-15')).toBeInTheDocument()
+      
+      // Verify CopyButton presence. CopyButton has aria-label or accessible text?
+      // My CopyButton implementation has <span className="sr-only">{label}</span>
+      // label defaults to "Copy", but I passed "Copy Date" for dates.
+      
+      // We should look for "Copy Date" hidden text
+      const copyButtons = screen.getAllByText('Copy Date')
+      expect(copyButtons.length).toBeGreaterThan(0)
+  })
 })

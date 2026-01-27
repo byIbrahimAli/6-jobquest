@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { CopyButton } from "@/components/ui/copy-button"
 
 export function JobBlock({ job }: { job: JobApplication }) {
   const [data, setData] = useState(job)
@@ -89,19 +90,29 @@ export function JobBlock({ job }: { job: JobApplication }) {
                         value={data.title} 
                         onChange={(e) => handleChange('title', e.target.value)}
                         placeholder="Job Title"
-                        className="magic-focus text-xl font-bold font-heading bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 placeholder:text-muted-foreground/30 transition-all focus:bg-transparent -ml-0.5 rounded-none w-full pb-1"
+                        className="magic-focus text-xl font-bold font-heading bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 placeholder:text-muted-foreground/30 transition-all focus:bg-transparent -ml-0.5 rounded-none w-full pb-1 pr-8"
                     />
+                    {data.title && (
+                        <div className="absolute right-0 top-0 bottom-0 flex items-center opacity-0 group-hover/title:opacity-100 transition-opacity">
+                            <CopyButton value={data.title} className="h-5 w-5 opacity-50 hover:opacity-100 text-muted-foreground" />
+                        </div>
+                    )}
                 </div>
                 
                 {/* Employer */}
-                <div className="flex items-center gap-2 text-base text-muted-foreground">
+                <div className="flex items-center gap-2 text-base text-muted-foreground relative group/employer w-full">
                     <span>at</span>
                     <Input 
                         value={data.employer} 
                         onChange={(e) => handleChange('employer', e.target.value)}
                         placeholder="Company Name"
-                        className="magic-focus font-medium bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 w-full inline-block placeholder:text-muted-foreground/30 focus:bg-transparent rounded-none pb-1"
+                        className="magic-focus font-medium bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 w-full inline-block placeholder:text-muted-foreground/30 focus:bg-transparent rounded-none pb-1 pr-8"
                     />
+                    {data.employer && (
+                        <div className="absolute right-0 top-0 bottom-0 flex items-center opacity-0 group-hover/employer:opacity-100 transition-opacity">
+                            <CopyButton value={data.employer} className="h-5 w-5 opacity-50 hover:opacity-100 text-muted-foreground" />
+                        </div>
+                    )}
                 </div>
            </div>
            
@@ -138,53 +149,80 @@ export function JobBlock({ job }: { job: JobApplication }) {
 
        {/* ... rest of the component (grid and URL section) ... */}
        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-3">
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 relative group/cat">
                 <label className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">Category</label>
-                <Input 
-                    value={data.category} 
-                    onChange={(e) => handleChange('category', e.target.value)}
-                    className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm rounded-none"
-                    placeholder="General"
-                />
+                <div className="relative">
+                    <Input 
+                        value={data.category} 
+                        onChange={(e) => handleChange('category', e.target.value)}
+                        className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm rounded-none pr-6"
+                        placeholder="General"
+                    />
+                    {data.category && (
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center opacity-0 group-hover/cat:opacity-100 transition-opacity">
+                             <CopyButton value={data.category} className="h-4 w-4 opacity-50 hover:opacity-100" />
+                        </div>
+                    )}
+                </div>
             </div>
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 relative group/applied">
                 <label className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">Applied</label>
-                <Input 
-                    type="date"
-                    value={data.dateApplied ? new Date(data.dateApplied).toISOString().split('T')[0] : ''} 
-                    onChange={(e) => handleChange('dateApplied', e.target.value)}
-                    className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm rounded-none"
-                />
+                <div className="relative">
+                    <Input 
+                        type="date"
+                        value={data.dateApplied ? new Date(data.dateApplied).toISOString().split('T')[0] : ''} 
+                        onChange={(e) => handleChange('dateApplied', e.target.value)}
+                        className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm rounded-none pr-6"
+                    />
+                    {data.dateApplied && (
+                         <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center opacity-0 group-hover/applied:opacity-100 transition-opacity">
+                             <CopyButton value={new Date(data.dateApplied).toLocaleDateString()} label="Copy Date" className="h-4 w-4 opacity-50 hover:opacity-100" />
+                        </div>
+                    )}
+                </div>
             </div>
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 relative group/interview">
                 <label className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">Interviewed</label>
-                 <Input 
-                    type="date"
-                    value={data.dateInterviewed ? new Date(data.dateInterviewed).toISOString().split('T')[0] : ''} 
-                    onChange={(e) => handleChange('dateInterviewed', e.target.value)}
-                    className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm text-muted-foreground focus:text-foreground rounded-none"
-                    placeholder="Add date"
-                />
+                 <div className="relative">
+                    <Input 
+                        type="date"
+                        value={data.dateInterviewed ? new Date(data.dateInterviewed).toISOString().split('T')[0] : ''} 
+                        onChange={(e) => handleChange('dateInterviewed', e.target.value)}
+                        className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm text-muted-foreground focus:text-foreground rounded-none pr-6"
+                        placeholder="Add date"
+                    />
+                    {data.dateInterviewed && (
+                        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center opacity-0 group-hover/interview:opacity-100 transition-opacity">
+                             <CopyButton value={new Date(data.dateInterviewed).toLocaleDateString()} label="Copy Date" className="h-4 w-4 opacity-50 hover:opacity-100" />
+                        </div>
+                    )}
+                </div>
             </div>
        </div>
 
        {/* URL Section */}
        <div className="space-y-2">
             {(!data.urlMeta && !data.url) && (
-                <div className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity p-0 group/url">
+                <div className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity p-0 group/url relative">
                     <LinkIcon className="h-3.5 w-3.5 text-muted-foreground" />
                     <Input 
                         value={data.url || ''} 
                         onChange={handleUrlChange} 
                         placeholder="Paste Job URL..."
-                        className="magic-focus bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 px-0 h-7 text-xs w-full rounded-none"
+                        className="magic-focus bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 px-0 h-7 text-xs w-full rounded-none pr-8"
                     />
+                     {data.url && (
+                        <div className="absolute right-0 top-0 bottom-0 flex items-center opacity-0 group-hover/url:opacity-100 transition-opacity">
+                            <CopyButton value={data.url} className="h-4 w-4 opacity-50 hover:opacity-100" />
+                        </div>
+                    )}
                 </div>
             )}
             
             {(data.url || data.urlMeta) && (
                 <div className="relative group/bookmark animate-in fade-in zoom-in-95 duration-300">
-                    <div className="absolute -top-2 -right-2 z-10 opacity-0 group-hover/bookmark:opacity-100 transition-all scale-90 group-hover/bookmark:scale-100">
+                    <div className="absolute -top-2 -right-2 z-10 opacity-0 group-hover/bookmark:opacity-100 transition-all scale-90 group-hover/bookmark:scale-100 flex gap-1">
+                         <CopyButton value={data.url || ''} className="h-6 w-6 rounded-full shadow-md bg-background border hover:bg-muted" />
                          <Button variant="destructive" size="icon" className="h-6 w-6 rounded-full shadow-md" onClick={clearUrl}>
                             <Trash2 className="h-3 w-3" />
                          </Button>
