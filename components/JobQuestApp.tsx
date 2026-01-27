@@ -43,11 +43,36 @@ export function JobQuestApp({ jobs }: { jobs: JobApplication[] }) {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="All">All Statuses</SelectItem>
-                        <SelectItem value="Interested">Interested</SelectItem>
-                        <SelectItem value="Applied">Applied</SelectItem>
-                        <SelectItem value="Interviewing">Interviewing</SelectItem>
-                        <SelectItem value="Successful">Successful</SelectItem>
-                        <SelectItem value="Unsuccessful">Unsuccessful</SelectItem>
+                        <SelectItem value="Interested">
+                            <div className="flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-slate-500" />
+                                <span>Interested</span>
+                            </div>
+                        </SelectItem>
+                        <SelectItem value="Applied">
+                            <div className="flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-blue-500" />
+                                <span>Applied</span>
+                            </div>
+                        </SelectItem>
+                        <SelectItem value="Interviewing">
+                            <div className="flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-amber-500" />
+                                <span>Interviewing</span>
+                            </div>
+                        </SelectItem>
+                        <SelectItem value="Successful">
+                            <div className="flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-green-500" />
+                                <span>Successful</span>
+                            </div>
+                        </SelectItem>
+                        <SelectItem value="Unsuccessful">
+                            <div className="flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-red-500" />
+                                <span>Unsuccessful</span>
+                            </div>
+                        </SelectItem>
                     </SelectContent>
                 </Select>
                 
