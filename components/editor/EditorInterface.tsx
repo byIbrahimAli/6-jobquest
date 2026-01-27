@@ -27,6 +27,7 @@ export function EditorInterface({ jobs, viewMode }: { jobs: JobApplication[], vi
     await createJob({
       title: "",
       employer: "",
+      dateApplied: new Date(),
     })
   }
 

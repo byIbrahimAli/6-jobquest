@@ -2,16 +2,30 @@
 
 import { useState, useRef } from "react"
 import { JobApplication } from "@/lib/types"
-import { updateJob, fetchUrlMetadata } from "@/lib/actions"
+import { updateJob, fetchUrlMetadata, deleteJob } from "@/lib/actions"
 import { StatusBadge } from "./StatusBadge"
 import { BookmarkCard } from "./BookmarkCard"
 import { Input } from "@/components/ui/input"
 import { Link as LinkIcon, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export function JobBlock({ job }: { job: JobApplication }) {
   const [data, setData] = useState(job)
   const [loadingMeta, setLoadingMeta] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  
+  // ... state
   
   const updateTimeout = useRef<NodeJS.Timeout | null>(null)
 
@@ -59,54 +73,97 @@ export function JobBlock({ job }: { job: JobApplication }) {
       handleChange('urlMeta', null)
   }
 
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    await deleteJob(job.id)
+    // The component will likely be unmounted by a parent re-fetch or optimistically removed
+  }
+
   return (
-    <div className="group relative border rounded-lg p-4 bg-card shadow-sm hover:shadow-md transition-all">
-       <div className="flex items-start justify-between gap-4 mb-4">
-           <div className="flex-1 space-y-1">
-                <Input 
-                    value={data.title} 
-                    onChange={(e) => handleChange('title', e.target.value)}
-                    placeholder="Job Title"
-                    className="text-lg font-bold border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0"
-                />
-                <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground text-sm">at</span>
+    <div className="group relative border border-transparent hover:border-border/50 rounded-xl p-4 bg-background/60 backdrop-blur-xl border-muted/50 shadow-sm hover:shadow-lg transition-all duration-300">
+       <div className="flex flex-col md:flex-row items-start justify-between gap-4 mb-3">
+           <div className="flex-1 space-y-1 w-full">
+                {/* Title */}
+                <div className="group/title relative">
+                    <Input 
+                        value={data.title} 
+                        onChange={(e) => handleChange('title', e.target.value)}
+                        placeholder="Job Title"
+                        className="magic-focus text-xl font-bold font-heading bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 placeholder:text-muted-foreground/30 transition-all focus:bg-transparent -ml-0.5 rounded-none w-full pb-1"
+                    />
+                </div>
+                
+                {/* Employer */}
+                <div className="flex items-center gap-2 text-base text-muted-foreground">
+                    <span>at</span>
                     <Input 
                         value={data.employer} 
                         onChange={(e) => handleChange('employer', e.target.value)}
-                        placeholder="Employer"
-                        className="font-medium border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 w-auto inline-block"
+                        placeholder="Company Name"
+                        className="magic-focus font-medium bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 w-full inline-block placeholder:text-muted-foreground/30 focus:bg-transparent rounded-none pb-1"
                     />
                 </div>
            </div>
-           <StatusBadge status={data.status} onStatusChange={(s) => handleChange('status', s)} />
+           
+           <div className="flex items-center gap-4 self-start md:self-center">
+                <StatusBadge status={data.status} onStatusChange={(s) => handleChange('status', s)} />
+                
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        >
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Job Block?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This will permanently delete the job entry for <span className="font-semibold text-foreground">{data.title || 'Untitled'}</span> at <span className="font-semibold text-foreground">{data.employer || 'Unknown Company'}</span>. This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                {isDeleting ? "Deleting..." : "Delete"}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+           </div>
        </div>
 
-       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-4">
-            <div>
-                <label className="text-xs text-muted-foreground block mb-1">Category</label>
+       {/* ... rest of the component (grid and URL section) ... */}
+       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-3">
+            <div className="space-y-0.5">
+                <label className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">Category</label>
                 <Input 
                     value={data.category} 
                     onChange={(e) => handleChange('category', e.target.value)}
-                    className="h-8"
+                    className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm rounded-none"
+                    placeholder="General"
                 />
             </div>
-            <div>
-                <label className="text-xs text-muted-foreground block mb-1">Applied</label>
+            <div className="space-y-0.5">
+                <label className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">Applied</label>
                 <Input 
                     type="date"
                     value={data.dateApplied ? new Date(data.dateApplied).toISOString().split('T')[0] : ''} 
                     onChange={(e) => handleChange('dateApplied', e.target.value)}
-                    className="h-8"
+                    className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm rounded-none"
                 />
             </div>
-            <div>
-                <label className="text-xs text-muted-foreground block mb-1">Interviewed</label>
+            <div className="space-y-0.5">
+                <label className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/70">Interviewed</label>
                  <Input 
                     type="date"
                     value={data.dateInterviewed ? new Date(data.dateInterviewed).toISOString().split('T')[0] : ''} 
                     onChange={(e) => handleChange('dateInterviewed', e.target.value)}
-                    className="h-8"
+                    className="magic-focus h-7 bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 p-0 font-medium text-sm text-muted-foreground focus:text-foreground rounded-none"
+                    placeholder="Add date"
                 />
             </div>
        </div>
@@ -114,21 +171,21 @@ export function JobBlock({ job }: { job: JobApplication }) {
        {/* URL Section */}
        <div className="space-y-2">
             {(!data.urlMeta && !data.url) && (
-                <div className="flex items-center gap-2 opacity-50 focus-within:opacity-100 transition-opacity">
-                    <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity p-0 group/url">
+                    <LinkIcon className="h-3.5 w-3.5 text-muted-foreground" />
                     <Input 
                         value={data.url || ''} 
                         onChange={handleUrlChange} 
                         placeholder="Paste Job URL..."
-                        className="border-none shadow-none focus-visible:ring-0 px-0 h-8 text-sm"
+                        className="magic-focus bg-transparent dark:bg-transparent border-none shadow-none focus-visible:ring-0 px-0 h-7 text-xs w-full rounded-none"
                     />
                 </div>
             )}
             
             {(data.url || data.urlMeta) && (
-                <div className="relative group/bookmark">
-                    <div className="absolute top-2 right-2 z-10 opacity-0 group-hover/bookmark:opacity-100 transition-opacity">
-                         <Button variant="destructive" size="icon" className="h-6 w-6" onClick={clearUrl}>
+                <div className="relative group/bookmark animate-in fade-in zoom-in-95 duration-300">
+                    <div className="absolute -top-2 -right-2 z-10 opacity-0 group-hover/bookmark:opacity-100 transition-all scale-90 group-hover/bookmark:scale-100">
+                         <Button variant="destructive" size="icon" className="h-6 w-6 rounded-full shadow-md" onClick={clearUrl}>
                             <Trash2 className="h-3 w-3" />
                          </Button>
                     </div>
@@ -138,7 +195,12 @@ export function JobBlock({ job }: { job: JobApplication }) {
                     />
                 </div>
             )}
-            {loadingMeta && <div className="text-xs text-muted-foreground">Fetching metadata...</div>}
+            {loadingMeta && (
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground animate-pulse">
+                    <div className="h-1.5 w-1.5 bg-primary rounded-full animate-bounce" />
+                    Fetching metadata...
+                </div>
+            )}
        </div>
     </div>
   )

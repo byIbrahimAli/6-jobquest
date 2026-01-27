@@ -123,3 +123,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes gradient-pan {
+  0% { background-position: 0% 100%; }
+  100% { background-position: 200% 100%; }
+}
+
+.magic-focus {
+  background: linear-gradient(90deg, #a855f7, #ec4899, #3b82f6, #a855f7) bottom left no-repeat;
+  background-size: 0% 2px;
+  transition: background-size 0.3s ease-out;
+}
+
+.magic-focus:focus,
+.magic-focus:focus-visible {
+  background-size: 200% 2px;
+  animation: gradient-pan 3s linear infinite;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
