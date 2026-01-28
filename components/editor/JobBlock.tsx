@@ -87,6 +87,7 @@ export function JobBlock({ job }: { job: JobApplication }) {
                 {/* Title */}
                 <div className="group/title relative">
                     <Input 
+                        autoFocus={!data.title}
                         value={data.title} 
                         onChange={(e) => handleChange('title', e.target.value)}
                         placeholder="Job Title"
