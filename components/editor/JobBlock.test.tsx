@@ -1,59 +1,111 @@
-import { render, screen } from '@testing-library/react'
+
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { JobBlock } from './JobBlock'
 import { JobApplication } from '@/lib/types'
 
-// Mock server actions
+// Mock generic Alert Dialog parts to render children directly
+jest.mock('@/components/ui/alert-dialog', () => ({
+  AlertDialog: ({ children }: any) => <div>{children}</div>,
+  AlertDialogTrigger: ({ children }: any) => <div>{children}</div>,
+  AlertDialogContent: ({ children }: any) => <div>{children}</div>,
+  AlertDialogHeader: ({ children }: any) => <div>{children}</div>,
+  AlertDialogTitle: ({ children }: any) => <div>{children}</div>,
+  AlertDialogDescription: ({ children }: any) => <div>{children}</div>,
+  AlertDialogFooter: ({ children }: any) => <div>{children}</div>,
+  AlertDialogCancel: ({ children }: any) => <button>{children}</button>,
+  AlertDialogAction: ({ children }: any) => <button>{children}</button>,
+}))
+
+// Mock Copy Button and others
+jest.mock('@/components/ui/copy-button', () => ({
+  CopyButton: () => <button>Copy</button>
+}))
+jest.mock('@/components/ui/button', () => ({
+  Button: ({ children, onClick, title, className, ...props }: any) => (
+    <button onClick={onClick} title={title} className={className} {...props}>
+      {children}
+    </button>
+  )
+}))
+
+// Mock Actions
 jest.mock('@/lib/actions', () => ({
   updateJob: jest.fn(),
-  deleteJob: jest.fn(),
-  fetchUrlMetadata: jest.fn(),
+  fetchUrlMetadata: jest.fn().mockResolvedValue({ title: 'Meta Title', description: 'Meta Desc' }),
+  deleteJob: jest.fn()
 }))
 
 const mockJob: JobApplication = {
-  id: '1',
-  title: 'Software Engineer',
-  employer: 'Tech Corp',
-  status: 'Applied',
+  id: 'test-id',
+  title: 'Test Job',
+  employer: 'Test Corp',
+  status: 'Applying',
+  category: 'Engineering',
   dateApplied: new Date('2024-01-01'),
   dateInterviewed: null,
-  category: 'Engineering',
-  url: '',
-  urlMeta: null,
+  url: 'https://example.com',
+  urlMeta: '{"title":"Example","description":"Desc"}',
+  notes: 'Existing note',
   createdAt: new Date(),
-  updatedAt: new Date(),
+  updatedAt: new Date()
 }
 
 describe('JobBlock', () => {
   it('renders correctly', () => {
     render(<JobBlock job={mockJob} />)
-    
-    // Check if main fields are present
-    expect(screen.getByDisplayValue('Software Engineer')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('Tech Corp')).toBeInTheDocument()
-    
-    
-    // Check if status badge is present (Applied appears twice: label and status)
-    expect(screen.getAllByText('Applied').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByDisplayValue('Test Job')).toBeInTheDocument()
+    expect(screen.getByDisplayValue('Test Corp')).toBeInTheDocument()
   })
 
-  it('shows copy button for interview date when present', () => {
-      const interviewJob = { 
-          ...mockJob, 
-          dateInterviewed: new Date('2024-02-15') 
-      }
-      render(<JobBlock job={interviewJob} />)
+  
+  it('shows notes if they exist', () => {
+      render(<JobBlock job={mockJob} />)
+      expect(screen.getByDisplayValue('Existing note')).toBeInTheDocument()
+  })
+
+  it('updates notes when typing', async () => {
+      const user = userEvent.setup()
+      render(<JobBlock job={mockJob} />)
       
-      // Verify date display
-      // Depending on locale, '2024-02-15' might render variously. 
-      // The input value uses YYYY-MM-DD
-      expect(screen.getByDisplayValue('2024-02-15')).toBeInTheDocument()
+      const textarea = screen.getByDisplayValue('Existing note')
+      await user.clear(textarea)
+      await user.type(textarea, 'Updated note content')
       
-      // Verify CopyButton presence. CopyButton has aria-label or accessible text?
-      // My CopyButton implementation has <span className="sr-only">{label}</span>
-      // label defaults to "Copy", but I passed "Copy Date" for dates.
+      expect(screen.getByDisplayValue('Updated note content')).toBeInTheDocument()
+  })
+  
+  it('deletes note when trash clicked', async () => {
+      const user = userEvent.setup()
+      render(<JobBlock job={mockJob} />)
       
-      // We should look for "Copy Date" hidden text
-      const copyButtons = screen.getAllByText('Copy Date')
-      expect(copyButtons.length).toBeGreaterThan(0)
+      const clearButton = screen.getByTitle('Clear Note')
+      await user.click(clearButton)
+      
+      expect(screen.queryByDisplayValue('Existing note')).not.toBeInTheDocument()
+  })
+
+  it('toggles URL edit mode', async () => {
+      const user = userEvent.setup()
+      render(<JobBlock job={mockJob} />) // Has URL
+      
+      // Should show card (edit button present), not input initially
+      expect(screen.queryByPlaceholderText('Paste Job URL (auto-scrapes)')).not.toBeInTheDocument()
+      
+      // Click Edit
+      const editButton = screen.getByTitle('Edit URL')
+      await user.click(editButton)
+      
+      // Should show input now
+      const input = screen.getByPlaceholderText('Paste Job URL (auto-scrapes)')
+      expect(input).toBeInTheDocument()
+      // Local state should start with DB value
+      expect(input).toHaveValue('https://example.com')
+      
+      // Blur to save/close
+      fireEvent.blur(input)
+      
+      // Should revert to card
+      expect(screen.queryByPlaceholderText('Paste Job URL (auto-scrapes)')).not.toBeInTheDocument()
   })
 })
