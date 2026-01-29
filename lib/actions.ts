@@ -20,6 +20,7 @@ export async function createJob(data: {
   dateInterviewed?: Date | string | null
   url?: string
   urlMeta?: string
+  notes?: string
 }) {
   const job = await prisma.jobApplication.create({
     data: {
@@ -30,7 +31,8 @@ export async function createJob(data: {
       dateApplied: data.dateApplied ? new Date(data.dateApplied) : null,
       dateInterviewed: data.dateInterviewed ? new Date(data.dateInterviewed) : null,
       url: data.url,
-      urlMeta: data.urlMeta
+      urlMeta: data.urlMeta,
+      notes: data.notes
     }
   })
   revalidatePath('/')

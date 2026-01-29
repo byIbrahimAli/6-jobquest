@@ -8,6 +8,7 @@ export interface JobApplication {
   status: string
   url: string | null
   urlMeta: string | null
+  notes: string | null
   createdAt: Date
   updatedAt: Date
 }

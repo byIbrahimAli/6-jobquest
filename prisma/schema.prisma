@@ -3,7 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  // FOR LOCAL DEVELOPMENT: Use 'sqlite'
+  provider = "sqlite"
+  
+  // FOR VERCEL DEPLOYMENT: Uncomment 'postgresql' and comment out 'sqlite'
+  // provider = "postgresql"
+  
   url      = env("DATABASE_URL")
 }
 
@@ -17,6 +22,7 @@ model JobApplication {
   status          String    @default("Interested")
   url             String?
   urlMeta         String?   // JSON string
+  notes           String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
