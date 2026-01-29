@@ -7,6 +7,7 @@ import { JobBlock } from "./JobBlock"
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Plus } from "lucide-react"
 import { StatusBadge } from "./StatusBadge"
+import { MobileToolbar } from "./MobileToolbar"
 
 export function EditorInterface({ jobs, viewMode }: { jobs: JobApplication[], viewMode: 'detailed' | 'concise' }) {
   const [open, setOpen] = useState(false)
@@ -80,6 +81,8 @@ export function EditorInterface({ jobs, viewMode }: { jobs: JobApplication[], vi
               Press <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100"><span className="text-xs">/</span></kbd> to add a job block.
           </div>
       )}
+      {/* Mobile Toolbar */}
+      <MobileToolbar onAdd={addJobBlock} />
     </div>
   )
 }
