@@ -9,7 +9,7 @@ interface MobileToolbarProps {
 
 export function MobileToolbar({ onAdd }: MobileToolbarProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 pb-safe-area-inset-bottom md:hidden pointer-events-none">
+    <div className="fixed bottom-0 left-0 right-0 z-[100] p-4 pb-8 md:hidden pointer-events-none">
        {/* Floating Wrapper */}
       <div className="flex items-center justify-end max-w-4xl mx-auto pointer-events-auto">
          {/* Add Button */}

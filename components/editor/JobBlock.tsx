@@ -129,7 +129,7 @@ export function JobBlock({ job }: { job: JobApplication }) {
            </div>
            
            {/* Actions - Visible on hover/focus */}
-           <div className="flex items-center gap-1 md:opacity-0 group-hover:opacity-100 transition-opacity self-end md:self-auto">
+           <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity self-end md:self-auto">
                 <Button 
                     variant="ghost" 
                     size="icon" 
