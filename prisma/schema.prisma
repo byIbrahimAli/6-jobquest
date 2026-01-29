@@ -3,16 +3,13 @@ generator client {
 }
 
 datasource db {
-  // FOR LOCAL DEVELOPMENT: If you want to use SQLite locally, you must revert this.
-  // But for Vercel, we need Postgres.
+  // FOR LOCAL DEVELOPMENT: Use 'sqlite'
   // provider = "sqlite"
-  
+  // url      = "file:./dev.db"
+
+  // FOR VERCEL DEPLOYMENT: PostgreSQL
   provider = "postgresql"
-  
-  // Uses connection pooling
-  url = env("POSTGRES_PRISMA_URL")
-  // Uses direct connection for migrations
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  url      = env("DATABASE_URL")
 }
 
 model JobApplication {
