@@ -36,7 +36,7 @@ export function JobNote({ note, onUpdate, onDelete, className }: JobNoteProps) {
                     value={value}
                     onChange={handleChange}
                     placeholder="Add notes, interview details, or thoughts..."
-                    className="min-h-[80px] bg-muted/30 border-none resize-y text-sm focus-visible:ring-1 focus-visible:ring-ring/20 p-3 rounded-lg placeholder:text-muted-foreground/40"
+                    className="min-h-[80px] bg-muted/30 border-none resize-y text-sm focus-visible:ring-0 p-3 rounded-lg placeholder:text-muted-foreground/40 magic-focus focus-visible:ring-offset-0"
                     spellCheck={false}
                 />
                  <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

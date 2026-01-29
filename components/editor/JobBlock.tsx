@@ -106,24 +106,24 @@ export function JobBlock({ job }: { job: JobApplication }) {
            
            <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-baseline gap-1 md:gap-2 w-full">
                 {/* Title */}
-                <div className="group/title relative flex-shrink-0">
+                <div className="group/title relative flex-shrink-0 flex-1 min-w-[200px]">
                     <Input 
                         autoFocus={!data.title}
                         value={data.title} 
                         onChange={(e) => handleChange('title', e.target.value)}
                         placeholder="Job Title"
-                        className="magic-focus text-lg font-bold font-heading bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 placeholder:text-muted-foreground/30 transition-all focus:bg-transparent -ml-0.5 rounded-none w-full md:w-auto pb-0"
+                        className="magic-focus text-lg font-bold font-heading bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 placeholder:text-muted-foreground/30 transition-all focus:bg-transparent -ml-0.5 rounded-none w-full pb-0"
                     />
                 </div>
                 
                 {/* Employer */}
-                <div className="flex items-center gap-2 text-sm text-muted-foreground relative group/employer min-w-0">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground relative group/employer min-w-0 flex-1">
                     <span className="opacity-50">at</span>
                     <Input 
                         value={data.employer} 
                         onChange={(e) => handleChange('employer', e.target.value)}
                         placeholder="Company"
-                        className="magic-focus font-medium bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 inline-block placeholder:text-muted-foreground/30 focus:bg-transparent rounded-none pb-0 truncate min-w-[100px]"
+                        className="magic-focus font-medium bg-transparent dark:bg-transparent border-none px-0 shadow-none focus-visible:ring-0 h-auto p-0 inline-block placeholder:text-muted-foreground/30 focus:bg-transparent rounded-none pb-0 truncate w-full"
                     />
                 </div>
            </div>
@@ -172,12 +172,12 @@ export function JobBlock({ job }: { job: JobApplication }) {
 
        {/* Sub Row: Category | Applied | Interviewed */}
        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground mb-2 px-1">
-            <div className="flex items-center gap-2">
-                <span className="font-semibold text-[10px] uppercase tracking-wider opacity-50">Category</span>
+            <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+                <span className="font-semibold text-[10px] uppercase tracking-wider opacity-50 flex-shrink-0">Category</span>
                 <Input 
                     value={data.category} 
                     onChange={(e) => handleChange('category', e.target.value)}
-                    className="magic-focus h-5 bg-transparent border-none shadow-none focus-visible:ring-0 p-0 text-xs w-[100px]"
+                    className="magic-focus h-5 bg-transparent border-none shadow-none focus-visible:ring-0 p-0 text-xs w-full"
                     placeholder="General"
                 />
             </div>
@@ -204,75 +204,84 @@ export function JobBlock({ job }: { job: JobApplication }) {
             </div>
        </div>
 
-       {/* Notes Section */}
-       {(showNotes || data.notes) && (
-            <div className="mt-3 pt-3 border-t border-border/40 group relative">
-                <JobNote 
-                    note={data.notes} 
-                    onUpdate={(note) => handleChange('notes', note)} 
-                    onDelete={() => {
-                        handleChange('notes', '')
-                        setShowNotes(false)
-                    }}
-                    className={showNotes ? "" : "hidden"}
-                />
-            </div>
-       )}
+       {/* Bottom Section: Flexible Row for Notes & URL */}
+       <div className="flex flex-col md:flex-row gap-4 mt-2 empty:hidden">
+            {/* Notes Section */}
+            {(showNotes || data.notes) && (
+                <div className="flex-1 min-w-0 pt-2 border-t border-border/40 md:border-none md:pt-0 group relative">
+                    <JobNote 
+                        note={data.notes} 
+                        onUpdate={(note) => handleChange('notes', note)} 
+                        onDelete={() => {
+                            handleChange('notes', '')
+                            setShowNotes(false)
+                        }}
+                        className={showNotes ? "" : "hidden"}
+                    />
+                </div>
+            )}
 
-       {/* URL Section - Compact */}
-       <div className="space-y-2 mt-2">
-            {/* Input Mode: Show if (No Data) OR (Editing) */}
-            {((!data.urlMeta && !data.url) || isEditingUrl) && (
-                <div className="flex items-center gap-2 opacity-100 transition-opacity p-0 group/url relative animate-in fade-in slide-in-from-top-1 duration-200">
-                    <LinkIcon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                    <Input 
-                        autoFocus={isEditingUrl}
-                        value={localUrl} 
-                        onChange={handleUrlChange} 
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                setIsEditingUrl(false)
-                            }
-                        }}
-                        onBlur={() => {
-                            // Close when clicking away
-                            setIsEditingUrl(false)
-                        }}
-                        placeholder="Paste Job URL (auto-scrapes)"
-                        className="magic-focus bg-transparent border-none shadow-none focus-visible:ring-0 px-0 h-6 text-[10px] w-full"
-                    />
-                    {/* Trash Button removed per user request */}
-                </div>
-            )}
-            
-            {/* Card Mode: Show if (Has Data) AND (Not Editing) */}
-            {(data.url || data.urlMeta) && !isEditingUrl && (
-                <div className="relative group/bookmark animate-in fade-in zoom-in-95 duration-300">
-                    <div className="absolute -top-2 -right-2 z-10 opacity-0 group-hover/bookmark:opacity-100 transition-all scale-90 group-hover/bookmark:scale-100 flex gap-1">
-                         <CopyButton value={data.url || ''} className="h-6 w-6 rounded-full shadow-md bg-background border hover:bg-muted" />
-                         <Button 
-                            variant="secondary" 
-                            size="icon" 
-                            className="h-6 w-6 rounded-full shadow-md bg-background border hover:bg-muted text-muted-foreground hover:text-foreground" 
-                            onClick={() => setIsEditingUrl(true)}
-                            title="Edit URL"
-                        >
-                            <Edit2 className="h-3 w-3" />
-                         </Button>
-                    </div>
-                    <BookmarkCard 
-                        url={data.url || '#'} 
-                        meta={data.urlMeta ? JSON.parse(data.urlMeta) : null} 
-                    />
-                </div>
-            )}
-            
-            {loadingMeta && (
-                <div className="flex items-center gap-2 text-[10px] text-muted-foreground animate-pulse mt-1">
-                    <div className="h-1.5 w-1.5 bg-primary rounded-full animate-bounce" />
-                    Fetching metadata...
-                </div>
-            )}
+            {/* URL Section - Compact */}
+            {/* Show if has Data OR Editing OR (Notes are present, to balance row? No, hide if empty) */}
+            {/* Actually user said "split it 50/50... layout of job block". If URL is empty/hidden, notes take full width? */}
+            {/* "When a note is added it'll be on the same row as the url link it just splits it 50/50" */}
+            <div className={cn(
+                "flex-1 min-w-0 space-y-2",
+                !showNotes && !data.notes ? "w-full" : "", // Full width if no notes
+                (showNotes || data.notes) && "md:border-l md:border-border/40 md:pl-4" // Separation if notes exist
+            )}>
+                 {/* Input Mode: Show if (No Data) OR (Editing) */}
+                 {((!data.urlMeta && !data.url) || isEditingUrl) && (
+                     <div className="flex items-center gap-2 opacity-100 transition-opacity p-0 group/url relative animate-in fade-in slide-in-from-top-1 duration-200 mt-1">
+                         <LinkIcon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                         <Input 
+                             autoFocus={isEditingUrl}
+                             value={localUrl} 
+                             onChange={handleUrlChange} 
+                             onKeyDown={(e) => {
+                                 if (e.key === 'Enter') {
+                                     setIsEditingUrl(false)
+                                 }
+                             }}
+                             onBlur={() => {
+                                 // Close when clicking away
+                                 setIsEditingUrl(false)
+                             }}
+                             placeholder="Paste Job URL (auto-scrapes)"
+                             className="magic-focus bg-transparent border-none shadow-none focus-visible:ring-0 px-0 h-6 text-[10px] w-full"
+                         />
+                     </div>
+                 )}
+                 
+                 {/* Card Mode: Show if (Has Data) AND (Not Editing) */}
+                 {(data.url || data.urlMeta) && !isEditingUrl && (
+                     <div className="relative group/bookmark animate-in fade-in zoom-in-95 duration-300">
+                         <div className="absolute -top-2 -right-2 z-10 opacity-0 group-hover/bookmark:opacity-100 transition-all scale-90 group-hover/bookmark:scale-100 flex gap-1">
+                              <CopyButton value={data.url || ''} className="h-6 w-6 rounded-full shadow-md bg-background border hover:bg-muted" />
+                              <Button 
+                                 variant="secondary" 
+                                 size="icon" 
+                                 className="h-6 w-6 rounded-full shadow-md bg-background border hover:bg-muted text-muted-foreground hover:text-foreground" 
+                                 onClick={() => setIsEditingUrl(true)}
+                                 title="Edit URL"
+                             >
+                                 <Edit2 className="h-3 w-3" />
+                              </Button>
+                         </div>
+                         <BookmarkCard 
+                             url={data.url || '#'} 
+                             meta={data.urlMeta ? JSON.parse(data.urlMeta) : null} 
+                         />
+                     </div>
+                 )}
+                 
+                 {loadingMeta && (
+                     <div className="flex items-center gap-2 text-[10px] text-muted-foreground animate-pulse mt-1">
+                         <div className="h-1.5 w-1.5 bg-primary rounded-full animate-bounce" />
+                         Fetching metadata...
+                     </div>
+                 )}
+            </div>
        </div>
 
     </div>

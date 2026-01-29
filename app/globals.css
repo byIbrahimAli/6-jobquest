@@ -130,15 +130,17 @@
 }
 
 .magic-focus {
-  background: linear-gradient(90deg, #a855f7, #ec4899, #3b82f6, #a855f7) bottom left no-repeat;
+  background: linear-gradient(90deg, #a855f7, #ec4899, #3b82f6, #a855f7);
   background-size: 0% 2px;
+  background-repeat: repeat-x;
+  background-position: 0% 100%;
   transition: background-size 0.3s ease-out;
 }
 
 .magic-focus:focus,
 .magic-focus:focus-visible {
   background-size: 200% 2px;
-  animation: gradient-pan 3s linear infinite;
+  animation: gradient-pan 2s linear infinite;
   outline: none !important;
   box-shadow: none !important;
 }

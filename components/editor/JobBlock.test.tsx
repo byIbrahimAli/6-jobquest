@@ -36,6 +36,9 @@ jest.mock('@/lib/actions', () => ({
   deleteJob: jest.fn()
 }))
 
+// Mock Timer
+jest.useFakeTimers()
+
 const mockJob: JobApplication = {
   id: 'test-id',
   title: 'Test Job',
@@ -65,7 +68,7 @@ describe('JobBlock', () => {
   })
 
   it('updates notes when typing', async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
       render(<JobBlock job={mockJob} />)
       
       const textarea = screen.getByDisplayValue('Existing note')
@@ -76,7 +79,7 @@ describe('JobBlock', () => {
   })
   
   it('deletes note when trash clicked', async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
       render(<JobBlock job={mockJob} />)
       
       const clearButton = screen.getByTitle('Clear Note')
@@ -85,8 +88,13 @@ describe('JobBlock', () => {
       expect(screen.queryByDisplayValue('Existing note')).not.toBeInTheDocument()
   })
 
+  it('toggles notes section', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
+    render(<JobBlock job={{ ...mockJob, notes: null }} />)
+  })
+
   it('toggles URL edit mode', async () => {
-      const user = userEvent.setup()
+      const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
       render(<JobBlock job={mockJob} />) // Has URL
       
       // Should show card (edit button present), not input initially
@@ -107,5 +115,47 @@ describe('JobBlock', () => {
       
       // Should revert to card
       expect(screen.queryByPlaceholderText('Paste Job URL (auto-scrapes)')).not.toBeInTheDocument()
+  })
+
+  it('updates title on change', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
+    render(<JobBlock job={mockJob} />)
+    
+    // Find Title Input - it has "Job Title" placeholder
+    const input = screen.getByPlaceholderText('Job Title') // Changed from DisplayValue to Placeholder for stability if initial is generic, or DisplayValue if known.
+    // Actually mockJob has 'Test Job'.
+    // const input = screen.getByDisplayValue('Test Job') 
+    
+    await user.clear(input)
+    await user.type(input, 'New Title')
+    
+    expect(input).toHaveValue('New Title')
+    // Verify debounce if we can mock actions?
+    // updateJob shouldn't be called immediately
+    // expect(updateJob).not.toHaveBeenCalled()
+    // jest.advanceTimersByTime(500)
+    // expect(updateJob).toHaveBeenCalledWith('test-id', { title: 'New Title' })
+  })
+
+  it('updates employer on change', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
+    render(<JobBlock job={mockJob} />)
+    
+    const input = screen.getByPlaceholderText('Company')
+    await user.clear(input)
+    await user.type(input, 'New Corp')
+    
+    expect(input).toHaveValue('New Corp')
+  })
+
+  it('updates category on change', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
+    render(<JobBlock job={mockJob} />)
+    
+    const input = screen.getByDisplayValue('Engineering')
+    await user.clear(input)
+    await user.type(input, 'Management')
+    
+    expect(input).toHaveValue('Management')
   })
 })
