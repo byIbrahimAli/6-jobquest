@@ -7,6 +7,7 @@ import { StatusBadge } from "./StatusBadge"
 import { BookmarkCard } from "./BookmarkCard"
 import { JobNote } from "./JobNote"
 import { CustomCheckbox } from "./CustomCheckbox"
+import { NotificationPopover } from "./NotificationPopover"
 import { Input } from "@/components/ui/input"
 import { Link as LinkIcon, Trash2, StickyNote, Edit2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -140,6 +141,8 @@ export function JobBlock({ job }: { job: JobApplication }) {
            
            {/* Actions - Visible on hover/focus */}
            <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity self-end md:self-auto">
+                <NotificationPopover jobId={job.id} notifications={job.notifications || []} />
+                
                 <Button 
                     variant="ghost" 
                     size="icon" 

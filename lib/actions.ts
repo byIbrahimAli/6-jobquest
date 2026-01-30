@@ -7,8 +7,34 @@ import { JobApplication } from '@/lib/types'
 
 export async function getJobs() {
   return await prisma.jobApplication.findMany({
+    include: { notifications: { orderBy: { createdAt: 'desc' } } },
     orderBy: { createdAt: 'desc' }
   })
+}
+
+export async function createNotification(jobId: string, content: string) {
+  if (!content) return null
+  const note = await prisma.jobNotification.create({
+    data: { jobId, content, completed: false }
+  })
+  revalidatePath('/')
+  return note
+}
+
+export async function toggleNotificationStatus(id: string) {
+  const note = await prisma.jobNotification.findUnique({ where: { id } })
+  if (!note) return null
+  
+  await prisma.jobNotification.update({
+    where: { id },
+    data: { completed: !note.completed }
+  })
+  revalidatePath('/')
+}
+
+export async function deleteNotification(id: string) {
+  await prisma.jobNotification.delete({ where: { id } })
+  revalidatePath('/')
 }
 
 export async function createJob(data: {
