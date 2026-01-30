@@ -17,7 +17,7 @@ export interface JobApplication {
   url: string | null
   urlMeta: string | null
   notes: string | null
-  customCheck: boolean
+  customCheck?: boolean
   notifications?: JobNotification[]
   createdAt: Date
   updatedAt: Date

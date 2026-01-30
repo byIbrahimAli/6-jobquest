@@ -23,6 +23,18 @@ model JobApplication {
   url             String?
   urlMeta         String?   // JSON string
   notes           String?
+customCheck     Boolean   @default(false)
+  notifications   JobNotification[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+}
+
+model JobNotification {
+  id        String   @id @default(uuid())
+  content   String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  
+  jobId     String
+  job       JobApplication @relation(fields: [jobId], references: [id], onDelete: Cascade)
 }
