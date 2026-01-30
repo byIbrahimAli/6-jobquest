@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Cell } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -12,6 +13,14 @@ const STATUS_COLORS: Record<string, string> = {
 }
 
 export function StatusChart({ data }: { data: { name: string, value: number }[] }) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return <Card className="col-span-4 bg-background/60 backdrop-blur-xl border-muted/50 shadow-sm h-[320px]" /> // Placeholder
+
   return (
     <Card className="col-span-4 bg-background/60 backdrop-blur-xl border-muted/50 shadow-sm">
       <CardHeader>

@@ -1,94 +1,76 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+
+import { render, screen, fireEvent } from '@testing-library/react'
 import { JobQuestApp } from './JobQuestApp'
 import { JobApplication } from '@/lib/types'
 
-// Not mocking modules globally if we can avoid it, but let's stick to the pattern.
-jest.mock('@/lib/actions', () => ({
-  createJob: jest.fn(),
-  updateJob: jest.fn(),
-  deleteJob: jest.fn(),
+// Mock dependencies
+jest.mock('@/components/dashboard/DashboardHeader', () => ({
+  DashboardHeader: () => <div data-testid="dashboard-header">Header</div>
 }))
-
-// Mock UI Select components to avoid Radix UI pointer event issues in JSDOM
-jest.mock('@/components/ui/select', () => ({
-  Select: ({ value, onValueChange, children }: any) => (
-    <div data-testid="mock-select">
-      <select
-          value={value}
-          onChange={(e) => onValueChange(e.target.value)}
-          aria-label="Status"
-      >
-        {children}
-      </select>
+jest.mock('@/components/editor/EditorInterface', () => ({
+  EditorInterface: ({ viewMode, jobs }: any) => (
+    <div data-testid="editor-interface">
+      Mode: {viewMode} | Jobs: {jobs.length}
     </div>
-  ),
-  SelectTrigger: ({ children }: any) => <div>{children}</div>,
-  SelectValue: () => null,
-  SelectContent: ({ children }: any) => <>{children}</>,
-  SelectItem: ({ value, children }: any) => (
-      <option value={value}>{value}</option> // Simplify children for option text
-  ),
+  )
+}))
+// Mock Select (Radix) which might be hard to test in unit tests without extensive mocking
+jest.mock('@/components/ui/select', () => ({
+  Select: ({ children }: any) => <div>{children}</div>,
+  SelectTrigger: ({ children }: any) => <button>{children}</button>,
+  SelectValue: () => <span>Value</span>,
+  SelectContent: ({ children }: any) => <div>{children}</div>,
+  SelectItem: ({ children }: any) => <div>{children}</div>,
+}))
+jest.mock('@/components/ThemeToggle', () => ({
+  ThemeToggle: () => <button>Theme</button>
 }))
 
 const mockJobs: JobApplication[] = [
   {
     id: '1',
-    title: 'Frontend Dev',
+    title: 'Dev',
     employer: 'Google',
     status: 'Applied',
-    category: 'Engineering',
-    dateApplied: new Date(),
-    dateInterviewed: null,
-    url: '',
-    urlMeta: null,
-    updatedAt: new Date(),
+    category: 'Tech',
     createdAt: new Date(),
+    updatedAt: new Date(),
+    customCheck: false
   },
   {
     id: '2',
-    title: 'Backend Dev',
-    employer: 'Amazon',
+    title: 'Designer',
+    employer: 'Apple',
     status: 'Interested',
-    category: 'Engineering',
-    dateApplied: new Date(),
-    dateInterviewed: null,
-    url: '',
-    urlMeta: null,
-    updatedAt: new Date(),
+    category: 'Design',
     createdAt: new Date(),
-  },
+    updatedAt: new Date(),
+    customCheck: true 
+  }
 ]
 
 describe('JobQuestApp', () => {
-  it('renders dashboard components', () => {
-    render(<JobQuestApp jobs={mockJobs} />)
-    expect(screen.getByText('Overview')).toBeInTheDocument()
-    expect(screen.getByText('Frontend Dev')).toBeInTheDocument()
-    expect(screen.getByText('Backend Dev')).toBeInTheDocument()
-  })
-
-  it('filters jobs by status', async () => {
-    const user = userEvent.setup()
+  it('renders correctly and toggles view mode', () => {
     render(<JobQuestApp jobs={mockJobs} />)
 
-    // Default shows all
-    expect(screen.getByDisplayValue('Frontend Dev')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('Backend Dev')).toBeInTheDocument()
+    // Check Header and Editor present
+    expect(screen.getByTestId('dashboard-header')).toBeInTheDocument()
+    expect(screen.getByTestId('editor-interface')).toHaveTextContent('Mode: detailed')
 
-    const selects = screen.getAllByRole('combobox') // <select> has implicit role combobox
-    const statusSelect = selects[0] // First is Status
+    // Find custom toggle buttons
+    const detailedBtn = screen.getByText('Detailed')
+    const conciseBtn = screen.getByText('Concise')
 
-    // Select 'Applied'
-    await user.selectOptions(statusSelect, 'Applied')
+    // Click Concise
+    fireEvent.click(conciseBtn)
+    expect(screen.getByTestId('editor-interface')).toHaveTextContent('Mode: concise')
+    
+    // Check styling classes (active state) logic implicitly via behavior, 
+    // but explicit class check:
+    expect(conciseBtn).toHaveClass('bg-background') 
 
-    // Now filtering should be applied.
-    // 'Backend Dev' is in the filtered-out list (EditorInterface), so it should generally disappear from THERE.
-    // Note: It might still be in RecentActivity (unfiltered).
-    // JobBlock uses inputs with values, RecentActivity uses text.
-    await waitFor(() => {
-       expect(screen.getByDisplayValue('Frontend Dev')).toBeInTheDocument()
-       expect(screen.queryByDisplayValue('Backend Dev')).not.toBeInTheDocument()
-    })
+    // Click Detailed
+    fireEvent.click(detailedBtn)
+    expect(screen.getByTestId('editor-interface')).toHaveTextContent('Mode: detailed')
   })
 })

@@ -9,6 +9,7 @@ export interface JobApplication {
   url: string | null
   urlMeta: string | null
   notes: string | null
+  customCheck: boolean
   createdAt: Date
   updatedAt: Date
 }

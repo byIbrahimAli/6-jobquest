@@ -6,7 +6,8 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader"
 import { EditorInterface } from "@/components/editor/EditorInterface"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+// import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs" // Removed to fix hydration mismatch
 
 export function JobQuestApp({ jobs }: { jobs: JobApplication[] }) {
   const [viewMode, setViewMode] = useState<'detailed' | 'concise'>('detailed')
@@ -27,12 +28,22 @@ export function JobQuestApp({ jobs }: { jobs: JobApplication[] }) {
         
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-0 bg-background z-10 py-4 border-b">
             <div className="flex items-center gap-2">
-                <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'detailed' | 'concise')}>
-                    <TabsList>
-                        <TabsTrigger value="detailed">Detailed</TabsTrigger>
-                        <TabsTrigger value="concise">Concise</TabsTrigger>
-                    </TabsList>
-                </Tabs>
+                <div className="inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground">
+                    <button
+                        onClick={() => setViewMode('detailed')}
+                        className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${viewMode === 'detailed' ? 'bg-background text-foreground shadow-sm' : 'hover:bg-background/50 hover:text-foreground'}`}
+                        data-state={viewMode === 'detailed' ? 'active' : 'inactive'}
+                    >
+                        Detailed
+                    </button>
+                    <button
+                        onClick={() => setViewMode('concise')}
+                        className={`inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${viewMode === 'concise' ? 'bg-background text-foreground shadow-sm' : 'hover:bg-background/50 hover:text-foreground'}`}
+                        data-state={viewMode === 'concise' ? 'active' : 'inactive'}
+                    >
+                        Concise
+                    </button>
+                </div>
             </div>
             
             <div className="flex items-center gap-2">

@@ -6,6 +6,7 @@ import { updateJob, fetchUrlMetadata, deleteJob } from "@/lib/actions"
 import { StatusBadge } from "./StatusBadge"
 import { BookmarkCard } from "./BookmarkCard"
 import { JobNote } from "./JobNote"
+import { CustomCheckbox } from "./CustomCheckbox"
 import { Input } from "@/components/ui/input"
 import { Link as LinkIcon, Trash2, StickyNote, Edit2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -37,7 +38,7 @@ export function JobBlock({ job }: { job: JobApplication }) {
   
   const updateTimeout = useRef<NodeJS.Timeout | null>(null)
 
-  const handleChange = (field: keyof JobApplication, value: string | Date | null) => {
+  const handleChange = (field: keyof JobApplication, value: string | Date | null | boolean) => {
     const newData = { ...data, [field]: value }
     setData(newData)
     
@@ -99,8 +100,17 @@ export function JobBlock({ job }: { job: JobApplication }) {
   }
 
   return (
-    <div className="group relative border border-transparent hover:border-border/50 rounded-xl p-3 bg-background/60 backdrop-blur-xl border-muted/50 shadow-sm hover:shadow-lg transition-all duration-300">
-       {/* Header: Status | Title | Employer | Actions */}
+    <div className="group relative border border-transparent hover:border-border/50 rounded-xl bg-background/60 backdrop-blur-xl border-muted/50 shadow-sm hover:shadow-lg transition-all duration-300 flex overflow-hidden">
+       {/* Left Strip Checkbox */}
+       <CustomCheckbox 
+          checked={!!data.customCheck} 
+          onToggle={() => handleChange('customCheck', !data.customCheck)}
+          disabled={isDeleting}
+       />
+       
+       {/* Main Content Area */}
+       <div className="flex-1 p-3 min-w-0">
+        {/* Header: Status | Title | Employer | Actions */}
        <div className="flex flex-col md:flex-row items-start md:items-center gap-3 mb-2">
            <StatusBadge status={data.status} onStatusChange={(s) => handleChange('status', s)} />
            
@@ -284,6 +294,7 @@ export function JobBlock({ job }: { job: JobApplication }) {
             </div>
        </div>
 
+       </div>
     </div>
   )
 }

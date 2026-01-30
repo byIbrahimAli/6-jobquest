@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { JobBlock } from './JobBlock'
 import { JobApplication } from '@/lib/types'
+import { updateJob } from '@/lib/actions'
 
 // Mock generic Alert Dialog parts to render children directly
 jest.mock('@/components/ui/alert-dialog', () => ({
@@ -50,6 +51,7 @@ const mockJob: JobApplication = {
   url: 'https://example.com',
   urlMeta: '{"title":"Example","description":"Desc"}',
   notes: 'Existing note',
+  customCheck: false,
   createdAt: new Date(),
   updatedAt: new Date()
 }
@@ -157,5 +159,23 @@ describe('JobBlock', () => {
     await user.type(input, 'Management')
     
     expect(input).toHaveValue('Management')
+  })
+
+  it('toggles custom checkbox', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
+    render(<JobBlock job={mockJob} />)
+    
+    // Default is false (red) -> "Marked: No"
+    const checkbox = screen.getByRole('button', { name: "Toggle to Yes" })
+    expect(checkbox).toBeInTheDocument()
+    
+    // Click to toggle
+    await user.click(checkbox)
+    
+    // Expect toggle call
+    // Logic: it updates local state immediately, then debounces updateJob
+    // We check if title changed or if we can spy on updateJob
+    jest.advanceTimersByTime(500)
+    expect(updateJob).toHaveBeenCalledWith('test-id', { customCheck: true })
   })
 })
