@@ -139,17 +139,26 @@ export function JobBlock({ job }: { job: JobApplication }) {
                 </div>
            </div>
            
-           {/* Actions - Visible on hover/focus */}
-           <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity self-end md:self-auto">
-                <NotificationPopover jobId={job.id} notifications={job.notifications || []} />
+           {/* Actions - Mobile: Top Right Absolute | Desktop: Static, Hover-revealed (mostly) */}
+           <div className="absolute top-2 right-2 md:static flex items-center gap-1 self-end md:self-auto z-10">
+                <div className={cn(
+                    "transition-opacity duration-200",
+                    /* Desktop: Hide by default unless has notifications or hovering group */
+                    (job.notifications && job.notifications.length > 0) ? "opacity-100" : "opacity-100 md:opacity-0 group-hover:opacity-100"
+                )}>
+                    <NotificationPopover jobId={job.id} notifications={job.notifications || []} />
+                </div>
                 
                 <Button 
                     variant="ghost" 
                     size="icon" 
                     onClick={() => setShowNotes(!showNotes)}
                     className={cn(
-                        "h-7 w-7 text-muted-foreground hover:text-foreground",
-                        (showNotes || data.notes) && "text-primary bg-primary/10 opacity-100"
+                        "h-7 w-7 text-muted-foreground hover:text-foreground transition-opacity duration-200",
+                        /* Show if notes exist/open, otherwise hide on desktop until hover */
+                        (showNotes || data.notes) 
+                            ? "text-primary bg-primary/10 opacity-100" 
+                            : "opacity-100 md:opacity-0 group-hover:opacity-100"
                     )}
                 >
                     <StickyNote className="h-3.5 w-3.5" />
@@ -160,7 +169,7 @@ export function JobBlock({ job }: { job: JobApplication }) {
                         <Button 
                             variant="ghost" 
                             size="icon" 
-                            className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                            className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-opacity duration-200 opacity-100 md:opacity-0 group-hover:opacity-100"
                         >
                             <Trash2 className="h-3.5 w-3.5" />
                         </Button>
