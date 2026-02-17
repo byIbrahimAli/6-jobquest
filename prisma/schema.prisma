@@ -4,12 +4,12 @@ generator client {
 
 datasource db {
   // FOR LOCAL DEVELOPMENT: Use 'sqlite'
-  // provider = "sqlite"
-  // url      = "file:./dev.db"
+  provider = "sqlite"
+  url      = "file:./dev.db"
 
   // FOR VERCEL DEPLOYMENT: PostgreSQL
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // provider = "postgresql"
+  // url      = env("DATABASE_URL")
 }
 
 model JobApplication {
@@ -23,7 +23,7 @@ model JobApplication {
   url             String?
   urlMeta         String?   // JSON string
   notes           String?
-customCheck     Boolean   @default(false)
+  customCheck     Boolean   @default(false)
   notifications   JobNotification[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
