@@ -78,6 +78,10 @@ Follow these steps to get the project up and running locally.
 
     Open [http://localhost:3000](http://localhost:3000) (or the port shown in your terminal) to view the app.
 
+## 💡 Usage
+
+**Adding a New Job**: To keep the interface clean and minimal, creating a new job block is hidden behind a secret command. Simply **press the `/` key** on your keyboard to open the "Add Job" modal.
+
 ## 🎥 Demo
 
 [Watch the App Demo](./public/assets/app-demo.mp4)
