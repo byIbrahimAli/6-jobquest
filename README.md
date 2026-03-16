@@ -94,6 +94,25 @@ To run the test suite:
 npm test
 ```
 
+## 🔄 Switching from Local SQLite to Vercel Postgres
+
+**local mode** SQLite for dev testing. 
+**ship mode** Vercel with a hosted PostgreSQL db
+
+### `prisma/schema.prisma` – swap the datasource
+
+```diff
+ datasource db {
+  // FOR LOCAL DEVELOPMENT: Use 'sqlite'
+-  provider = "sqlite"
+-  url      = "file:./dev.db"
+
+  // FOR VERCEL DEPLOYMENT: PostgreSQL
++  provider  = "postgresql"
++  url       = env("DATABASE_URL")
+ }
+```
+
 ## 📄 Licence
 
 This project is open-source and available under the [MIT Licence](LICENSE).
